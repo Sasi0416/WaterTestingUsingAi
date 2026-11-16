@@ -318,7 +318,7 @@ export const AlgaeDetectionPanel: React.FC<AlgaeDetectionPanelProps> = ({
                   onClick={() => setViewMode(tab.id)}
                   className={`min-h-[38px] rounded-md px-3.5 py-1.5 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap shrink-0 ${
                     viewMode === tab.id
-                      ? 'bg-white text-sky-900 shadow-xs'
+                      ? 'bg-white text-sky-900 shadow-sm'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -361,7 +361,7 @@ export const AlgaeDetectionPanel: React.FC<AlgaeDetectionPanelProps> = ({
                     src={analysis.originalDataUrl}
                     alt="Original uploaded water sample"
                     referrerPolicy="no-referrer"
-                    className="aspect-4/3 w-full object-cover"
+                    className="aspect-[4/3] w-full object-cover"
                   />
                   <figcaption className="border-t border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-600">
                     Original Photo · {analysis.imageName}
@@ -372,7 +372,7 @@ export const AlgaeDetectionPanel: React.FC<AlgaeDetectionPanelProps> = ({
                     src={analysis.highlightedDataUrl}
                     alt="Water photo with detected green algae highlighted in orange"
                     referrerPolicy="no-referrer"
-                    className="aspect-4/3 w-full object-cover"
+                    className="aspect-[4/3] w-full object-cover"
                   />
                   <figcaption className="border-t border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-700 flex items-center justify-between gap-2">
                     <span>Highlighted Green Algae Areas</span>
@@ -410,7 +410,7 @@ export const AlgaeDetectionPanel: React.FC<AlgaeDetectionPanelProps> = ({
                   <div className="flex items-center gap-3">
                     <span className="inline-flex items-center gap-1.5">
                       <span
-                        className="inline-block h-3 w-3 rounded-xs bg-orange-500"
+                        className="inline-block h-3 w-3 rounded-sm bg-orange-500"
                         aria-hidden="true"
                       />
                       <span>Detected Green Algae</span>

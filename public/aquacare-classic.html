@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AQUA CARE (Classic Offline Edition) – Water Quality &amp; Algae Detection</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f9ff;
+      color: #0f172a;
+      line-height: 1.5;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 14px 20px;
+    }
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0369a1;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      border: 1px solid #0284c7;
+      background: #0284c7;
+      color: #ffffff;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+    .container {
+      max-width: 960px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h1 { margin: 0 0 8px; font-size: 26px; color: #0c4a6e; }
+    h2 { margin: 0 0 8px; font-size: 20px; color: #0f172a; }
+    p { margin: 0 0 12px; color: #334155; }
+    .notice {
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #0c4a6e;
+      margin: 12px 0;
+    }
+    .ph-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      margin-top: 12px;
+    }
+    input[type="number"] {
+      width: 110px;
+      padding: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+    }
+    input[type="range"] {
+      flex: 1;
+      min-width: 200px;
+    }
+    .spectrum {
+      height: 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+      background: linear-gradient(to right, #dc2626, #f97316, #eab308, #22c55e, #06b6d4, #2563eb, #4338ca);
+    }
+    .status-box {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+    }
+    .status-good { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+    .status-fair { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+    .status-poor { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+    .canvas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    canvas {
+      width: 100%;
+      height: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #f1f5f9;
+      display: block;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 14px 0;
+    }
+    .metric {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+    .metric-label { font-size: 12px; color: #475569; }
+    .metric-val { font-size: 24px; font-weight: bold; margin-top: 4px; }
+    ul { padding-left: 20px; margin: 8px 0 0; }
+    li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">AQUA CARE · Classic Offline Edition</div>
+      <button class="btn btn-secondary" type="button" onclick="resetAll()">Reset Check</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h1>AQUA CARE – Water Quality &amp; Algae Detection</h1>
+      <p>Beginner-friendly classic edition. Works offline in older and newer web browsers with no account or installation required.</p>
+    </div>
+
+    <div class="card">
+      <h2>Step 1: pH Testing (0 to 14)</h2>
+      <p>Enter your pH reading from a pH test strip, liquid test kit, or digital pH meter.</p>
+      <div class="notice"><strong>Important:</strong> A normal photograph cannot measure pH. Always use a real pH strip or sensor.</div>
+
+      <div class="ph-row">
+        <label for="phInput"><strong>pH Value:</strong></label>
+        <input id="phInput" type="number" min="0" max="14" step="0.1" value="7.0" oninput="syncPh(this.value)" />
+        <input id="phSlider" type="range" min="0" max="14" step="0.1" value="7.0" oninput="syncPh(this.value)" />
+      </div>
+      <div class="spectrum"></div>
+      <div id="phResult" class="status-box status-good"></div>
+    </div>
+
+    <div class="card">
+      <h2>Step 2: Visible Green Algae Detection</h2>
+      <p>Upload a water photograph to detect visible green algae, highlight green areas, and estimate surface coverage.</p>
+      <div class="notice"><strong>Estimate Notice:</strong> Percentage is an estimate of visible green coverage in your photo, not a laboratory measurement.</div>
+
+      <input id="photoInput" type="file" accept="image/*" onchange="handlePhoto(this.files[0])" />
+
+      <div id="algaeResultWrap" style="display:none;">
+        <div class="canvas-grid">
+          <div>
+            <p><strong>Original Photo</strong></p>
+            <canvas id="origCanvas"></canvas>
+          </div>
+          <div>
+            <p><strong>Highlighted Green Algae (Orange)</strong></p>
+            <canvas id="highlightCanvas"></canvas>
+          </div>
+        </div>
+        <div id="algaeStats" class="status-box" style="margin-top:14px;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Step 3: Results &amp; Simple Recommendations</h2>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-label">pH Value</div>
+          <div id="sumPh" class="metric-val">7.0</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Estimated Algae Coverage</div>
+          <div id="sumAlgae" class="metric-val">Pending</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Water-Quality Status</div>
+          <div id="sumStatus" class="metric-val">Good</div>
+        </div>
+      </div>
+      <div id="overallBox" class="status-box status-good"></div>
+      <h3>Recommendations</h3>
+      <ul id="recList"></ul>
+    </div>
+  </div>
+
+  <script>
+    var currentPh = 7.0;
+    var currentAlgae = null;
+
+    function evaluatePh(val) {
+      var v = Math.min(14, Math.max(0, Math.round(val * 10) / 10));
+      var category = "Neutral";
+      var status = "Good";
+      var msg = "Balanced freshwater range (6.5 to 8.2).";
+
+      if (v < 5.5) {
+        category = "Acidic";
+        status = "Poor";
+        msg = "Strongly acidic and outside the healthy range.";
+      } else if (v < 6.5) {
+        category = "Acidic";
+        status = "Fair";
+        msg = "Mildly acidic; monitor closely.";
+      } else if (v <= 7.5) {
+        category = "Neutral";
+        status = "Good";
+        msg = "Neutral and healthy for most freshwater uses.";
+      } else if (v <= 8.2) {
+        category = "Alkaline";
+        status = "Good";
+        msg = "Mildly alkaline and within healthy freshwater range.";
+      } else if (v <= 9.0) {
+        category = "Alkaline";
+        status = "Fair";
+        msg = "Moderately alkaline; watch for algae growth.";
+      } else {
+        category = "Alkaline";
+        status = "Poor";
+        msg = "Strongly alkaline and outside the healthy range.";
+      }
+      return { value: v, category: category, status: status, msg: msg };
+    }
+
+    function syncPh(raw) {
+      var num = parseFloat(raw);
+      if (isNaN(num)) return;
+      num = Math.min(14, Math.max(0, Math.round(num * 10) / 10));
+      currentPh = num;
+      document.getElementById("phInput").value = num.toFixed(1);
+      document.getElementById("phSlider").value = num;
+      updateUI();
+    }
+
+    function rgbToHsv(r, g, b) {
+      var rn = r / 255, gn = g / 255, bn = b / 255;
+      var max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+      var d = max - min, h = 0;
+      if (d > 0) {
+        if (max === rn) h = 60 * (((gn - bn) / d) % 6);
+        else if (max === gn) h = 60 * ((bn - rn) / d + 2);
+        else h = 60 * ((rn - gn) / d + 4);
+      }
+      if (h < 0) h += 360;
+      var s = max === 0 ? 0 : d / max;
+      return [h, s, max];
+    }
+
+    function handlePhoto(file) {
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var img = new Image();
+        img.onload = function () {
+          var maxDim = 560;
+          var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          var w = Math.max(1, Math.round(img.width * scale));
+          var h = Math.max(1, Math.round(img.height * scale));
+
+          var origC = document.getElementById("origCanvas");
+          var hiC = document.getElementById("highlightCanvas");
+          origC.width = w; origC.height = h;
+          hiC.width = w; hiC.height = h;
+
+          var oCtx = origC.getContext("2d");
+          var hCtx = hiC.getContext("2d");
+          oCtx.drawImage(img, 0, 0, w, h);
+
+          var imgData = oCtx.getImageData(0, 0, w, h);
+          var d = imgData.data;
+          var outData = hCtx.createImageData(w, h);
+          var o = outData.data;
+          var total = w * h;
+          var detected = 0;
+
+          for (var i = 0; i < total; i++) {
+            var idx = i * 4;
+            var r = d[idx], g = d[idx + 1], b = d[idx + 2];
+            var hsv = rgbToHsv(r, g, b);
+            var exG = (2 * g - r - b) / 255;
+            var isAlgae = hsv[0] >= 60 && hsv[0] <= 158 && hsv[1] >= 0.17 && hsv[2] >= 0.12 && g >= r * 0.99 && g >= b * 1.05 && exG >= 0.04;
+            if (isAlgae) {
+              detected++;
+              o[idx] = Math.min(255, Math.round(r * 0.4 + 249 * 0.6));
+              o[idx + 1] = Math.min(255, Math.round(g * 0.4 + 115 * 0.6));
+              o[idx + 2] = Math.min(255, Math.round(b * 0.4 + 22 * 0.6));
+              o[idx + 3] = 255;
+            } else {
+              var l = 0.299 * r + 0.587 * g + 0.114 * b;
+              o[idx] = Math.round((r * 0.55 + l * 0.45) * 0.85);
+              o[idx + 1] = Math.round((g * 0.55 + l * 0.45) * 0.88);
+              o[idx + 2] = Math.round((b * 0.55 + l * 0.45) * 0.92);
+              o[idx + 3] = 255;
+            }
+          }
+
+          hCtx.putImageData(outData, 0, 0);
+          var pct = Math.round((detected / total) * 1000) / 10;
+          var level = pct < 10 ? "Low" : (pct <= 35 ? "Medium" : "High");
+          currentAlgae = { pct: pct, level: level };
+          document.getElementById("algaeResultWrap").style.display = "block";
+          updateUI();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function statusClass(status) {
+      if (status === "Good") return "status-box status-good";
+      if (status === "Fair") return "status-box status-fair";
+      return "status-box status-poor";
+    }
+
+    function updateUI() {
+      var ph = evaluatePh(currentPh);
+      var phBox = document.getElementById("phResult");
+      phBox.className = statusClass(ph.status);
+      phBox.innerHTML = "<strong>" + ph.category + " (" + ph.status + "):</strong> " + ph.msg;
+
+      document.getElementById("sumPh").textContent = ph.value.toFixed(1) + " (" + ph.category + ")";
+
+      var overall = ph.status;
+      var recs = [];
+
+      if (currentAlgae) {
+        var aBox = document.getElementById("algaeStats");
+        var aTier = currentAlgae.level === "Low" ? "Good" : (currentAlgae.level === "Medium" ? "Fair" : "Poor");
+        aBox.className = statusClass(aTier);
+        aBox.innerHTML = "<strong>Estimated Visible Algae:</strong> " + currentAlgae.pct.toFixed(1) + "% (" + currentAlgae.level + " Level)";
+        document.getElementById("sumAlgae").textContent = currentAlgae.pct.toFixed(1) + "% (" + currentAlgae.level + ")";
+
+        if (ph.status === "Poor" || currentAlgae.level === "High") overall = "Poor";
+        else if (ph.status === "Fair" || currentAlgae.level === "Medium") overall = "Fair";
+        else overall = "Good";
+
+        if (currentAlgae.level === "High") {
+          recs.push("Heavy visible algae detected. Avoid swimming, drinking, or letting pets into the water.");
+          recs.push("Skim floating green mats and improve water circulation.");
+        } else if (currentAlgae.level === "Medium") {
+          recs.push("Moderate algae patches detected. Remove visible clumps and reduce direct sunlight or fertilizer runoff.");
+        } else {
+          recs.push("Visible green algae is low. Keep leaves and organic debris out of the water.");
+        }
+      } else {
+        document.getElementById("sumAlgae").textContent = "Pending";
+        recs.push("Upload a water photograph in Step 2 to check for visible green algae.");
+      }
+
+      if (ph.status !== "Good") {
+        recs.push("Your pH (" + ph.value.toFixed(1) + ") is outside the 6.5–8.2 comfort range. Re-test to verify and balance safely.");
+      } else {
+        recs.push("Your pH (" + ph.value.toFixed(1) + ") is within the healthy 6.5–8.2 freshwater range.");
+      }
+
+      document.getElementById("sumStatus").textContent = overall;
+      var oBox = document.getElementById("overallBox");
+      oBox.className = statusClass(overall);
+      oBox.innerHTML = "<strong>Overall Water-Quality Status: " + overall + "</strong>";
+
+      var recList = document.getElementById("recList");
+      recList.innerHTML = "";
+      for (var i = 0; i < recs.length; i++) {
+        var li = document.createElement("li");
+        li.textContent = recs[i];
+        recList.appendChild(li);
+      }
+    }
+
+    function resetAll() {
+      currentPh = 7.0;
+      currentAlgae = null;
+      document.getElementById("phInput").value = "7.0";
+      document.getElementById("phSlider").value = "7.0";
+      document.getElementById("photoInput").value = "";
+      document.getElementById("algaeResultWrap").style.display = "none";
+      updateUI();
+    }
+
+    updateUI();
+  </script>
+</body>
+</html>

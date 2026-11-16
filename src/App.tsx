@@ -144,13 +144,22 @@ export default function App() {
       </main>
 
       <footer className="border-t border-slate-200 bg-white py-6">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <p className="font-medium text-slate-700">
-            AQUA CARE – AI Water Quality and Algae Detection System
-          </p>
-          <p>
-            pH requires manual input or a pH sensor · Photo algae coverage is a visual estimate, not a lab test.
-          </p>
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div>
+            <p className="font-medium text-slate-700">
+              AQUA CARE – AI Water Quality and Algae Detection System
+            </p>
+            <p className="mt-1">
+              pH requires manual input or a pH sensor · Photo algae coverage is a visual estimate, not a lab test.
+            </p>
+          </div>
+          <a
+            href="/aquacare-classic.html"
+            download="aquacare-classic.html"
+            className="text-sky-700 font-medium hover:underline underline-offset-4 whitespace-nowrap shrink-0"
+          >
+            Download Classic Offline HTML
+          </a>
         </div>
       </footer>
     </div>
