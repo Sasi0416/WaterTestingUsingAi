@@ -1,0 +1,6 @@
+{
+  "name": "AQUA CARE – AI Water Quality & Algae Detection",
+  "description": "Beginner-friendly water quality testing and visible green algae image detection system with manual pH evaluation (0–14), green area highlighting, and plain-language recommendations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
